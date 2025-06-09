@@ -68,8 +68,19 @@ class MerkleTree {
 
 
 function verifyProof(proof, nodeHash, rootHash) {
-    // TODO Verify proof chain
+    let hash = nodeHash;
+    for (let i = 0; i < proof.length; i++) {
+        const proofNode = proof[i];
+        if (proofNode.left) {
+            // Если узел proof находится слева, текущий хеш должен быть справа
+            hash = concatHashes(proofNode.hash, hash);
+        } else {
+            // Если узел proof находится справа, текущий хеш должен быть слева
+            hash = concatHashes(hash, proofNode.hash);
+        }
+    }
+    return hash === rootHash;
 }
 
 
-module.exports = {MerkleTree, verifyProof }
+module.exports = {MerkleTree, verifyProof}

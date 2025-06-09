@@ -2,6 +2,7 @@
  * Seminar 2.5 Simple Trie
  */
 
+// import { useInsertionEffect } from "react";
 
 class TrieNode {
     constructor(key) {
@@ -15,21 +16,58 @@ class TrieNode {
 class Trie {
     constructor() {
         this.root = new TrieNode(null);
+
     }
 
     insert(word) {
         // TODO Insert word symbol by symbol
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const symbol = word[i];
+            if (!node.children[symbol]) {
+                node.children[symbol] = new TrieNode(symbol);
+            }
+
+            node = node.children[symbol];
+
+            if (i === word.length - 1) {
+                node.isWord = true;
+            }
+        }
 
     }
 
-    hasNode(word){
+    hasNode(word) {
         // TODO Check is word in Trie
-        return false;
+        let node = this.root;
+
+        for (const symbol of word) {
+            if (!node.children[symbol]) {
+                return false;
+            }
+            node = node.children[symbol];
+        }
+
+        return node.isWord;
     }
 
-    getAllNodes(){
-        // TODO returns all nodes as array
-        return [];
+    getAllNodes() {
+        const nodes = [];
+
+        const traverse = (node) => {
+            if (!node) return;
+
+            nodes.push(node);
+
+            for (const childKey in node.children) {
+                traverse(node.children[childKey]);
+            }
+        };
+
+        // Начинаем обход с корневого узла
+        traverse(this.root);
+
+        return nodes;
     }
 }
 
